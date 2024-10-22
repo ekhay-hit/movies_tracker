@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 
 const tempMovieData = [
   {
@@ -54,21 +54,24 @@ export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   return (
     <>
-      <Nav movies={movies} />
-      <Main movies={movies} />
+      {/* using composition to avoid state drilling when passing movies to Numresults and same thing for ListBox*/}
+      <Nav>
+        <Log />
+        <Search />
+        <Numresults movies={movies} />
+      </Nav>
+
+      <Main>
+        <ListBox movies={movies} />
+        <WatchedBox />
+      </Main>
     </>
   );
 }
 
 // Navigation component
-function Nav({ movies }) {
-  return (
-    <nav className="nav-bar">
-      <Log />
-      <Search />
-      <Numresults movies={movies} />
-    </nav>
-  );
+function Nav({ children }) {
+  return <nav className="nav-bar">{children}</nav>;
 }
 
 function Log() {
@@ -102,13 +105,8 @@ function Search() {
 }
 
 // Main component
-function Main({ movies }) {
-  return (
-    <main className="main">
-      <ListBox movies={movies} />
-      <WatchedBox />
-    </main>
-  );
+function Main({ children }) {
+  return <main className="main">{children}</main>;
 }
 
 // lIST BOX FOR THE MOVIES TO WATCH *********************************
