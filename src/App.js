@@ -55,7 +55,7 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const query = "interstellar";
+  const query = "sdfsdfgsdfg";
 
   // use useEffect to fetch data so it only fetch once
   useEffect(function () {
@@ -68,7 +68,9 @@ export default function App() {
         // check if there is data\
         if (!res.ok)
           throw new Error("Something went wrong with fetching movies");
+
         const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found");
         setMovies(data.Search);
       } catch (err) {
         console.error(err.message);
