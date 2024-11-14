@@ -11,7 +11,7 @@ const startContainerStyle = {
   display: "flex",
 };
 
-export default function StartRating({
+export default function StarRating({
   maxRating = 5,
   color = "#fcc419",
   size = 32,
