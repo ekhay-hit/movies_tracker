@@ -60,9 +60,10 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(""); // used to sotre the id of the movies that is selected
   // const query = "The black list";
   function handleSelectedMovie(id) {
-    console.log("selected a movie");
-    console.log(id);
-    setSelectedId(id);
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+  function handleCloseMovie() {
+    setSelectedId(null);
   }
   // use useEffect to fetch data so it only fetch once
   useEffect(
@@ -120,7 +121,10 @@ export default function App() {
         </Box>
         <Box>
           {selectedId ? (
-            <MovieDetails selectedId={selectedId} />
+            <MovieDetails
+              selectedId={selectedId}
+              OnCloseMovie={handleCloseMovie}
+            />
           ) : (
             <>
               <WatchedSummary watched={watched} />
@@ -201,7 +205,7 @@ function Box({ children }) {
 
 function MoviesList({ movies, OnSelectMovie }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
         <Movies
           movie={movie}
@@ -258,8 +262,15 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function MovieDetails({ selectedId }) {
-  return <div className="details">{selectedId}</div>;
+function MovieDetails({ selectedId, OnCloseMovie }) {
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={OnCloseMovie}>
+        &larr;
+      </button>
+      {selectedId}
+    </div>
+  );
 }
 function WatchedMoviesList({ watched }) {
   return (
