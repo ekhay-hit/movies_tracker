@@ -83,6 +83,13 @@ export default function App() {
           setIsLoading(false);
         }
       }
+
+      // if there is no search query setmovis to empty array and seterror to empty string
+      // so it does show no movies found
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+      }
       fetchMovies();
     },
     [query]
