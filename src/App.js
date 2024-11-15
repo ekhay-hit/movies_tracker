@@ -349,7 +349,7 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched }) {
               <StarRating
                 maxRating={10}
                 size={24}
-                OnSetRating={setUserRating}
+                onSetRating={setUserRating}
               />
               {userRating > 0 && (
                 <button className="btn-add" onClick={handleAdd}>

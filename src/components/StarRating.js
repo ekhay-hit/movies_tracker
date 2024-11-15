@@ -17,9 +17,14 @@ export default function StarRating({
   size = 32,
   className = "", //use if you want to pass a class to the component so it can be reuseable
   defaultRating = 0,
+  onSetRating,
 }) {
   const [rating, setRating] = useState(defaultRating); //used to set the rating selected
   const [tempRating, setTemprating] = useState(0); // use to show the temp rating the user is hovering over
+  function handleRating(rating) {
+    setRating(rating);
+    onSetRating(rating);
+  }
 
   const textStyle = {
     lineHeight: "1",
@@ -33,7 +38,7 @@ export default function StarRating({
         {Array.from({ length: `${maxRating}` }, (_, i) => (
           <Star
             key={i}
-            onRate={() => setRating(i + 1)}
+            onRate={() => handleRating(i + 1)}
             onHoverIn={() => setTemprating(i + 1)}
             onHoverOut={() => setTemprating(0)}
             color={color}
