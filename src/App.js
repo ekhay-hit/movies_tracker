@@ -277,6 +277,10 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
 
   // before adding the movie to watched movies check if is not already added
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  // find the rating of the movie that you are to be adding if it is already in the watched movies so you can display the rating that you give it
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
   //destructure the object movie for easy use
   const {
     Title: title,
@@ -364,7 +368,9 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
                   )}
                 </>
               ) : (
-                <p>You already added and rated this movie</p>
+                <p>
+                  You already added and rated this movie {watchedUserRating}⭐
+                </p>
               )}
             </div>
             <p>
