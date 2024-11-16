@@ -130,6 +130,7 @@ export default function App() {
               selectedId={selectedId}
               OnCloseMovie={handleCloseMovie}
               onAddWatched={handelAddWatched}
+              watched={watched}
             />
           ) : (
             <>
@@ -268,11 +269,14 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function MovieDetails({ selectedId, OnCloseMovie, onAddWatched }) {
+function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
   // state to store the deatil of the movie
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
+
+  // before adding the movie to watched movies check if is not already added
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   //destructure the object movie for easy use
   const {
     Title: title,
@@ -346,15 +350,21 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched }) {
           </header>
           <section>
             <div className="rating">
-              <StarRating
-                maxRating={10}
-                size={24}
-                onSetRating={setUserRating}
-              />
-              {userRating > 0 && (
-                <button className="btn-add" onClick={handleAdd}>
-                  + Add to list
-                </button>
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAdd}>
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>You already added and rated this movie</p>
               )}
             </div>
             <p>
@@ -365,6 +375,7 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched }) {
           </section>
         </>
       )}
+      : <p>you already rated this movie</p>}
     </div>
   );
 }
