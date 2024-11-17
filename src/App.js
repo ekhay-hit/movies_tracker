@@ -340,6 +340,14 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
     [selectedId]
   );
 
+  useEffect(
+    function () {
+      if (!title) return; // to provent show title as undifined while the movie is being fetched
+      document.title = `Movie | ${title}`;
+    },
+    [title]
+  );
+
   return (
     <div className="details">
       {isLoading ? (
