@@ -344,6 +344,11 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
     function () {
       if (!title) return; // to provent show title as undifined while the movie is being fetched
       document.title = `Movie | ${title}`;
+
+      // this called cleanup function; use to remove the title when the component unmount so it does not show the last title of selected movie
+      return function () {
+        document.title = "PopcornTrac";
+      };
     },
     [title]
   );
