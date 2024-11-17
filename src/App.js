@@ -77,12 +77,15 @@ export default function App() {
   // use useEffect to fetch data so it only fetch once
   useEffect(
     function () {
+      // controller  will be use to abort the preview fetch request if another fetch request created, special when a fetch create in search while every letter being typed
+      const controller = new AbortController();
       async function fetchMovies() {
         setIsLoading(true);
         setError("");
         try {
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            { signal: controller.signal }
           );
           // check if there is data\
           if (!res.ok)
@@ -93,6 +96,9 @@ export default function App() {
           setMovies(data.Search);
         } catch (err) {
           console.error(err.message);
+          if (err.name !== "AbortError") {
+            setError(err.message);
+          }
           setError(err.message);
         } finally {
           setIsLoading(false);
@@ -106,7 +112,13 @@ export default function App() {
         setError("");
         return;
       }
+      // call the fetch function
       fetchMovies();
+
+      // returning the abort funcion
+      return function () {
+        controller.abort();
+      };
     },
     [query]
   );
