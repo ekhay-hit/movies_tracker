@@ -365,6 +365,18 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
     [title]
   );
 
+  // useEffect used to close the selected movie when the button escape clicked in the Keyboard
+  useEffect(
+    function () {
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Escape") {
+          OnCloseMovie();
+        }
+      });
+    },
+    [OnCloseMovie]
+  );
+
   return (
     <div className="details">
       {isLoading ? (
