@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+
+const KEY = "1e75e89a";
+
 export function useMovies(query) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const KEY = "1e75e89a";
+
   // use useEffect to fetch data so it only fetch once
   useEffect(
     function () {

@@ -51,6 +51,7 @@ const tempWatchedData = [
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
+const KEY = "1e75e89a";
 
 export default function App() {
   // const [watched, setWatched] = useState([]);
@@ -60,9 +61,8 @@ export default function App() {
   });
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(""); // used to sotre the id of the movies that is selected
-
-  // calling our customer hooks useMovies
-  useMovies(query);
+  // calling our customer hooks useMovies and also destrucring the values that returned which are movies, error and isLoading
+  const { movies, error, isLoading } = useMovies(query);
   // const query = "The black list";
   function handleSelectedMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
