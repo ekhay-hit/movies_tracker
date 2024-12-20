@@ -1,5 +1,6 @@
 import { Children, useEffect, useReducer, useState, useRef } from "react";
 import StarRating from "./components/StarRating";
+import { useMovies } from "./useMovies";
 
 const tempMovieData = [
   {
@@ -50,19 +51,18 @@ const tempWatchedData = [
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
-const KEY = "1e75e89a";
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
   // const [watched, setWatched] = useState([]);
   const [watched, setWatched] = useState(function () {
     const storedValue = localStorage.getItem("watched");
     return storedValue ? JSON.parse(storedValue) : [];
   });
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(""); // used to sotre the id of the movies that is selected
+
+  // calling our customer hooks useMovies
+  useMovies(query);
   // const query = "The black list";
   function handleSelectedMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
@@ -85,56 +85,6 @@ export default function App() {
       localStorage.setItem("watched", JSON.stringify(watched));
     },
     [watched]
-  );
-  // use useEffect to fetch data so it only fetch once
-  useEffect(
-    function () {
-      // controller  will be use to abort the preview fetch request if another fetch request created, special when a fetch create in search while every letter being typed
-      const controller = new AbortController();
-      async function fetchMovies() {
-        setIsLoading(true);
-        setError("");
-        try {
-          const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-            { signal: controller.signal }
-          );
-          // check if there is data\
-          if (!res.ok)
-            throw new Error("Something went wrong with fetching movies");
-
-          const data = await res.json();
-          if (data.Response === "False") throw new Error("Movie not found");
-          setMovies(data.Search);
-        } catch (err) {
-          console.error(err.message);
-          if (err.name !== "AbortError") {
-            setError(err.message);
-          }
-          setError(err.message);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-
-      // if there is no search query setmovis to empty array and seterror to empty string
-      // so it does show no movies found an no fetch will be made; only fetch when there is a valid query
-      if (query.length < 3) {
-        setMovies([]);
-        setError("");
-        return;
-      }
-      //use to close an open movie if there is a typing for a new search before
-      handleCloseMovie();
-      // call the fetch function
-      fetchMovies();
-
-      // returning the abort funcion
-      return function () {
-        controller.abort();
-      };
-    },
-    [query]
   );
 
   return (
