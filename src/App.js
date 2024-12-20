@@ -1,4 +1,4 @@
-import { Children, useEffect, useState } from "react";
+import { Children, useEffect, useReducer, useState, useRef } from "react";
 import StarRating from "./components/StarRating";
 
 const tempMovieData = [
@@ -214,6 +214,27 @@ function Numresults({ movies }) {
 }
 
 function Search({ query, setQuery }) {
+  //creating a ref to store html element for the input to focus it
+  const inputEl = useRef(null);
+
+  // using use effect to focus in the search bar when enter is clicked and empty the search bar
+  useEffect(
+    function () {
+      function callback(e) {
+        if (document.activeElement === inputEl.current) return;
+        if (e.code === "Enter") {
+          inputEl.current.focus();
+          setQuery("");
+        }
+      }
+
+      // even listner to call the callback when keydown is clicked
+      document.addEventListener("keydown", callback);
+      return () => document.addEventListener("keydown", callback);
+    },
+    [setQuery]
+  );
+
   return (
     <input
       className="search"
@@ -221,6 +242,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={inputEl}
     />
   );
 }
