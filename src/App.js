@@ -1,6 +1,7 @@
 import { Children, useEffect, useReducer, useState, useRef } from "react";
 import StarRating from "./components/StarRating";
 import { useMovies } from "./useMovies";
+import { useKey } from "./useKey";
 import { useLocalStorageState } from "./useLocalStorageState";
 
 const tempMovieData = [
@@ -161,22 +162,11 @@ function Search({ query, setQuery }) {
   const inputEl = useRef(null);
 
   // using use effect to focus in the search bar when enter is clicked and empty the search bar
-  useEffect(
-    function () {
-      function callback(e) {
-        if (document.activeElement === inputEl.current) return;
-        if (e.code === "Enter") {
-          inputEl.current.focus();
-          setQuery("");
-        }
-      }
-
-      // even listner to call the callback when keydown is clicked
-      document.addEventListener("keydown", callback);
-      return () => document.addEventListener("keydown", callback);
-    },
-    [setQuery]
-  );
+  useKey("Enter", function () {
+    if (document.activeElement === inputEl.current) return;
+    inputEl.current.focus();
+    setQuery("");
+  });
 
   return (
     <input
@@ -343,26 +333,8 @@ function MovieDetails({ selectedId, OnCloseMovie, onAddWatched, watched }) {
     },
     [title]
   );
-
-  // useEffect used to close the selected movie when the button escape clicked in the Keyboard
-  useEffect(
-    function () {
-      //function to call when open or remove eventlistner
-      function callback(e) {
-        if (e.code === "Escape") {
-          OnCloseMovie();
-        }
-      }
-      // listening to the event listner
-      document.addEventListener("keydown", callback);
-      //this will be use to remove event listner so we do not have multiple even created and acumulated a as new movies were selected, so it cleaned up the evenListner as soon as the open selected movie is closed allways return this when an evenlistner excuted
-      return function () {
-        document.removeEventListener("keydown", callback);
-      };
-    },
-    [OnCloseMovie]
-  );
-
+  // calling the custom hook of a key clicked
+  useKey("Escape", OnCloseMovie);
   return (
     <div className="details">
       {isLoading ? (
