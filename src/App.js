@@ -1,6 +1,7 @@
 import { Children, useEffect, useReducer, useState, useRef } from "react";
 import StarRating from "./components/StarRating";
 import { useMovies } from "./useMovies";
+import { useLocalStorageState } from "./useLocalStorageState";
 
 const tempMovieData = [
   {
@@ -55,12 +56,11 @@ const KEY = "1e75e89a";
 
 export default function App() {
   // const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(function () {
-    const storedValue = localStorage.getItem("watched");
-    return storedValue ? JSON.parse(storedValue) : [];
-  });
+  const [watched, setWatched] = useLocalStorageState([], "watched");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(""); // used to sotre the id of the movies that is selected
+  //Customs Hooks
+  // });
   // calling our customer hooks useMovies and also destrucring the values that returned which are movies, error and isLoading
   const { movies, error, isLoading } = useMovies(query);
   // const query = "The black list";
@@ -79,13 +79,6 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
-  // storing watched movies in the localstorage
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
 
   return (
     <>
